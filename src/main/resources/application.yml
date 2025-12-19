@@ -1,0 +1,24 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: library
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    driverClassName: org.h2.Driver
+    password: ""
+    url: jdbc:h2:mem:librarydb
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+logging:
+  file:
+    path: logs
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics"
