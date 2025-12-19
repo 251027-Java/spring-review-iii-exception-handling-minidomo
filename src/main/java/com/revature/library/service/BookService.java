@@ -1,11 +1,11 @@
 package com.revature.library.service;
 
+import com.revature.library.exception.BookNotAvailableException;
+import com.revature.library.exception.BookNotFoundException;
 import com.revature.library.model.Book;
 import com.revature.library.repository.BookRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,10 +34,10 @@ public class BookService {
     public Book checkoutBook(Long bookId) {
         Book book = bookRepository
                 .findById(bookId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book with id: " + bookId + " not found"));
 
         if (!book.isAvailable()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book is not available");
+            throw new BookNotAvailableException("Book with id: " + bookId + " is not available");
         }
 
         book.setAvailable(false);
@@ -49,11 +49,7 @@ public class BookService {
     public Book returnBook(Long bookId) {
         Book book = bookRepository
                 .findById(bookId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
-
-        if (book.isAvailable()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book is already available");
-        }
+                .orElseThrow(() -> new BookNotFoundException("Book with id: " + bookId + " not found"));
 
         book.setAvailable(true);
 
