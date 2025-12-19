@@ -52,7 +52,7 @@ public class BookService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
         if (book.isAvailable()) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book is already available");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book is already available");
         }
 
         book.setAvailable(true);

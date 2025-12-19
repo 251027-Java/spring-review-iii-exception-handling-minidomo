@@ -2,9 +2,10 @@ package com.revature.library.controller;
 
 import com.revature.library.model.Book;
 import com.revature.library.service.BookService;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,29 +20,32 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public ResponseEntity<List<Book>> getAllBooks() {
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @GetMapping("/{id}")
-    public Book getById(@PathVariable Long id) {
-        return bookService
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+    public ResponseEntity<Book> getById(@PathVariable Long id) {
+        return ResponseEntity.of(bookService.findById(id));
     }
 
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.addBook(book);
+    public ResponseEntity<Book> addBook(@RequestBody Book book) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.addBook(book));
     }
 
     @PutMapping("/{id}/checkout")
-    public Book checkoutBook(@PathVariable Long id) {
-        return bookService.checkoutBook(id);
+    public ResponseEntity<Book> checkoutBook(@PathVariable Long id) {
+        return ResponseEntity.ok(bookService.checkoutBook(id));
     }
 
     @PutMapping("/{id}/return")
-    public Book returnBook(@PathVariable Long id) {
-        return bookService.returnBook(id);
+    public ResponseEntity<Book> returnBook(@PathVariable Long id) {
+        return ResponseEntity.ok(bookService.returnBook(id));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Void> handleConstraintViolationException(ConstraintViolationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
