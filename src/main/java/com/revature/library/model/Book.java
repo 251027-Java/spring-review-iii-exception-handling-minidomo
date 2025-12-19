@@ -1,6 +1,8 @@
 package com.revature.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,12 +22,15 @@ public class Book {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Title is required")
     private String title;
 
     @Column(nullable = false)
+    @NotBlank(message = "Author is required")
     private String author;
 
     @Column(unique = true)
+    @Pattern(regexp = "^[0-9-]+$", message = "Invalid ISBN format")
     private String isbn;
 
     private boolean available = true;
